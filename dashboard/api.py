@@ -103,11 +103,11 @@ def _run_update():
             _update_state["status"] = "correcting"
             _update_state["progress"] = "Correcting time series..."
 
-        # Step 2: Run TS correction
+        # Step 2: Run TS correction (generic: ruptures PELT + hampel)
         proc = subprocess.run(
             [PYTHON, str(BASE_DIR / "ts_correction.py")],
             cwd=str(BASE_DIR),
-            capture_output=True, text=True, timeout=600,
+            capture_output=True, text=True, timeout=900,
         )
 
         if proc.returncode != 0:
@@ -115,6 +115,14 @@ def _run_update():
                 _update_state["status"] = "error"
                 _update_state["error"] = f"Correction failed: {proc.stderr[-500:]}"
             return
+
+        # Step 3: Run station-specific fixes (KER02 dual-instrument, etc.)
+        proc = subprocess.run(
+            [PYTHON, str(BASE_DIR / "fix_specific.py"), "KER02"],
+            cwd=str(BASE_DIR),
+            capture_output=True, text=True, timeout=120,
+        )
+        # Non-fatal if this fails — generic correction is still valid
 
         with _update_lock:
             now = datetime.now().isoformat()

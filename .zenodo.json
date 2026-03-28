@@ -1,0 +1,26 @@
+{
+  "title": "KER Groundwater Monitoring Dashboard",
+  "description": "Automated data acquisition, quality control, and visualization system for 18 groundwater monitoring wells in Debrecen, Hungary. Implements time series correction using ruptures (PELT) change point detection and Hampel filter for outlier removal.",
+  "creators": [
+    {
+      "name": "Fehér, Zsolt Zoltán",
+      "affiliation": "University of Debrecen"
+    }
+  ],
+  "upload_type": "software",
+  "license": "MIT",
+  "keywords": [
+    "groundwater monitoring",
+    "time series quality control",
+    "change point detection",
+    "PELT algorithm",
+    "Hampel filter",
+    "Debrecen",
+    "Hungary",
+    "water level",
+    "hydrological monitoring",
+    "dashboard"
+  ],
+  "related_identifiers": [],
+  "access_right": "open"
+}
