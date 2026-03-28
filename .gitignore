@@ -5,3 +5,6 @@ __pycache__/
 dashboard/server.log
 dashboard/frontend/node_modules/
 data/.update_state.json
+chart-errors/
+chart-errors2/
+chart-errors3/

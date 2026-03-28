@@ -4,3 +4,5 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 INFO:     127.0.0.1:61213 - "GET /quota-status HTTP/1.1" 200 OK
 INFO:     127.0.0.1:55433 - "GET /quota-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /quota-status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49338 - "GET /quota-status HTTP/1.1" 200 OK
