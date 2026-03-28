@@ -230,8 +230,23 @@ def get_timeseries(
     if raw_df is not None and "CH3" in raw_df.columns:
         raw_ch3 = raw_df["CH3"]
         result["CH3_raw"] = [None if pd.isna(v) else float(v) for v in raw_ch3]
+
+        # Also create spike-cleaned raw (no shift correction, just outlier removal)
+        from hampel import hampel as hampel_filter
+        valid = raw_ch3.dropna()
+        if len(valid) > 50:
+            r = hampel_filter(valid, window_size=25, n_sigma=4.0)
+            cleaned = raw_ch3.copy()
+            for idx in r.outlier_indices:
+                deviation = abs(valid.iloc[idx] - r.medians[idx])
+                if deviation >= 0.1:
+                    cleaned.loc[valid.index[idx]] = None
+            result["CH3_raw_cleaned"] = [None if pd.isna(v) else float(v) for v in cleaned]
+        else:
+            result["CH3_raw_cleaned"] = result["CH3_raw"]
     else:
         result["CH3_raw"] = []
+        result["CH3_raw_cleaned"] = []
 
     return result
 

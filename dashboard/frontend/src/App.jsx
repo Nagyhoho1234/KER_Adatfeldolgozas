@@ -271,14 +271,21 @@ export default function App() {
                 layout={plotLayout('Vízszint (Water Level)', 'm', 320)}
                 config={plotConfig} useResizeHandler style={{ width: '100%' }}
               />
-              {tsData.CH3_raw && tsData.CH3_raw.length > 0 && (
+              {tsData.CH3_raw_cleaned && tsData.CH3_raw_cleaned.length > 0 && (
                 <Plot
-                  data={[{
-                    x: tsData.timestamps, y: tsData.CH3_raw,
-                    type: 'scattergl', mode: 'lines', name: 'Raw observations',
-                    line: { color: '#aaa', width: 1 },
-                  }]}
-                  layout={plotLayout('Nyers vízszint (Raw Water Level)', 'm', 220)}
+                  data={[
+                    {
+                      x: tsData.timestamps, y: tsData.CH3_raw,
+                      type: 'scattergl', mode: 'lines', name: 'Nyers (raw)',
+                      line: { color: '#ddd', width: 1 },
+                    },
+                    {
+                      x: tsData.timestamps, y: tsData.CH3_raw_cleaned,
+                      type: 'scattergl', mode: 'lines', name: 'Szűrt (outliers removed)',
+                      line: { color: '#ff7f0e', width: 1.5 },
+                    },
+                  ]}
+                  layout={plotLayout('Nyers vízszint — szűrt (Raw, outliers removed)', 'm', 280)}
                   config={plotConfig} useResizeHandler style={{ width: '100%' }}
                 />
               )}
