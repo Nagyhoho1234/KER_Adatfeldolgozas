@@ -216,8 +216,8 @@ export default function App() {
       {/* Left panel: map */}
       <div className="map-panel">
         <div className="map-header">
-          <h2>KER Talajv\u00EDz Monitoring</h2>
-          <p>Debrecen \u2014 18 megfigyel\u0151 k\u00FAt</p>
+          <h2>KER Talajvíz Monitoring</h2>
+          <p>Debrecen — 18 megfigyelő kút</p>
         </div>
         <div ref={mapContainer} className="map-container" />
         <div className="station-list">
@@ -232,6 +232,7 @@ export default function App() {
             </div>
           ))}
         </div>
+        <div className="copyright">&copy; Fehér Zsolt Zoltán</div>
       </div>
 
       {/* Right panel: charts */}
@@ -260,7 +261,7 @@ export default function App() {
                   type: 'scattergl', mode: 'lines', name: 'Water level',
                   line: { color: '#1f77b4', width: 1.5 },
                 }]}
-                layout={plotLayout('V\u00EDzszint (Water Level)', 'm', 320)}
+                layout={plotLayout('Vízszint (Water Level)', 'm', 320)}
                 config={plotConfig} useResizeHandler style={{ width: '100%' }}
               />
               <Plot
@@ -269,7 +270,7 @@ export default function App() {
                   type: 'scattergl', mode: 'lines', name: 'Temperature',
                   line: { color: '#d62728', width: 1.5 },
                 }]}
-                layout={plotLayout('H\u0151m\u00E9rs\u00E9klet (Temperature)', '\u00B0C', 220)}
+                layout={plotLayout('Hőmérséklet (Temperature)', '\u00B0C', 220)}
                 config={plotConfig} useResizeHandler style={{ width: '100%' }}
               />
               <Plot
@@ -278,7 +279,7 @@ export default function App() {
                   type: 'scattergl', mode: 'lines', name: 'Conductivity',
                   line: { color: '#2ca02c', width: 1.5 },
                 }]}
-                layout={plotLayout('Vezet\u0151k\u00E9pess\u00E9g (Conductivity)', 'mS/cm', 220)}
+                layout={plotLayout('Vezetőképesség (Conductivity)', 'mS/cm', 220)}
                 config={plotConfig} useResizeHandler style={{ width: '100%' }}
               />
             </div>

@@ -84,14 +84,14 @@
       "code": "KER02",
       "lat": 47.591, "lng": 21.529, "eovx": 252604, "eovy": 836601,
       "instruments": [
-        {"instid": "202404028", "channels": [
+        {"instid": "202404010", "note": "OLD instrument Oct 2024 - Nov 2025", "channels": [
           {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
           {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
           {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
           {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
           {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
         ]},
-        {"instid": "202404010", "channels": [
+        {"instid": "202404028", "note": "NEW instrument Sep 2025 - present", "channels": [
           {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
           {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
           {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},

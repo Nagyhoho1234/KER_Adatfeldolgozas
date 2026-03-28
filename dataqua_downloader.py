@@ -175,26 +175,47 @@ def save_station_data(station_code, results, output_dir, station_info):
     channel_meta = {}
 
     # Group DataFrames by column name — multiple instruments may share columns
-    col_dfs = {}  # column_name -> list of Series
+    # Instruments are ordered old->new in config; newer instrument wins in overlaps
+    col_dfs = {}  # column_name -> list of (instid, Series)
     for instid, channels in results.items():
         for ch_id, ch_data in channels.items():
             df = ch_data["data"]
             for col in df.columns:
                 if col not in col_dfs:
                     col_dfs[col] = []
-                col_dfs[col].append(df[col])
+                col_dfs[col].append((instid, df[col]))
             channel_meta[f"CH{ch_id}"] = ch_data["meta"]
 
     if not col_dfs:
         return None
 
-    # For each column, combine all series (older first, newer overwrites overlaps)
+    # For each column, combine series: newer instrument wins entirely
+    # during overlap periods (drop old instrument data in overlap range)
     merged_cols = {}
-    for col, series_list in col_dfs.items():
-        combined = series_list[0]
-        for s in series_list[1:]:
-            combined = combined.combine_first(s)
-        merged_cols[col] = combined
+    for col, inst_series_list in col_dfs.items():
+        if len(inst_series_list) == 1:
+            merged_cols[col] = inst_series_list[0][1]
+        else:
+            # Instruments ordered old->new; build time ranges per instrument
+            inst_ranges = []
+            for instid, s in inst_series_list:
+                valid = s.dropna()
+                if len(valid) > 0:
+                    inst_ranges.append((instid, s, valid.index.min(), valid.index.max()))
+
+            # Start from the oldest
+            combined = inst_ranges[0][1].copy()
+            for i in range(1, len(inst_ranges)):
+                _, newer_s, newer_start, newer_end = inst_ranges[i]
+                # In the overlap region, DROP old data and use ONLY new data
+                overlap_mask = (combined.index >= newer_start) & (combined.index <= newer_end)
+                combined.loc[overlap_mask] = pd.NA
+                # Append new instrument's data
+                valid_newer = newer_s.dropna()
+                combined = combined.reindex(combined.index.union(valid_newer.index))
+                combined.loc[valid_newer.index] = valid_newer.values
+
+            merged_cols[col] = combined
 
     merged = pd.DataFrame(merged_cols)
 
@@ -252,17 +273,30 @@ def merge_update(station_code, new_results, output_dir, station_info):
             for col in df.columns:
                 if col not in col_dfs:
                     col_dfs[col] = []
-                col_dfs[col].append(df[col])
+                col_dfs[col].append((instid, df[col]))
 
     if not col_dfs:
         return None
 
     merged_cols = {}
-    for col, series_list in col_dfs.items():
-        combined = series_list[0]
-        for s in series_list[1:]:
-            combined = combined.combine_first(s)
-        merged_cols[col] = combined
+    for col, inst_series_list in col_dfs.items():
+        if len(inst_series_list) == 1:
+            merged_cols[col] = inst_series_list[0][1]
+        else:
+            inst_ranges = []
+            for instid, s in inst_series_list:
+                valid = s.dropna()
+                if len(valid) > 0:
+                    inst_ranges.append((instid, s, valid.index.min(), valid.index.max()))
+            combined = inst_ranges[0][1].copy()
+            for i in range(1, len(inst_ranges)):
+                _, newer_s, newer_start, newer_end = inst_ranges[i]
+                overlap_mask = (combined.index >= newer_start) & (combined.index <= newer_end)
+                combined.loc[overlap_mask] = pd.NA
+                valid_newer = newer_s.dropna()
+                combined = combined.reindex(combined.index.union(valid_newer.index))
+                combined.loc[valid_newer.index] = valid_newer.values
+            merged_cols[col] = combined
     new_merged = pd.DataFrame(merged_cols)
     new_merged.sort_index(inplace=True)
 

@@ -88,6 +88,14 @@ html, body, #root {
   text-overflow: ellipsis;
 }
 
+.copyright {
+  padding: 8px 16px;
+  font-size: 11px;
+  color: #6c7086;
+  text-align: center;
+  border-top: 1px solid #313244;
+}
+
 /* ---- Right panel: charts ---- */
 .chart-panel {
   flex: 1;
