@@ -5,44 +5,7 @@
   "lng": 21.669,
   "eovx": 248229,
   "eovy": 847320,
-  "channels": {
-    "CH0": {
-      "start": "24.09.30. 13:00",
-      "stop": "26.03.28. 00:00",
-      "unit": "mS/cm",
-      "count": 12954,
-      "interval": "60\tperc"
-    },
-    "CH1": {
-      "start": "24.09.30. 13:00",
-      "stop": "26.03.28. 00:00",
-      "unit": "°C",
-      "count": 12565,
-      "interval": "60\tperc"
-    },
-    "CH3": {
-      "start": "24.09.30. 13:00",
-      "stop": "26.03.28. 00:00",
-      "unit": "m",
-      "count": 12125,
-      "interval": "60\tperc"
-    },
-    "CHGEPV": {
-      "start": "24.10.01. 09:46",
-      "stop": "26.03.27. 03:43",
-      "unit": "mV",
-      "count": 450,
-      "interval": "1437\tperc"
-    },
-    "CHGMSQ": {
-      "start": "24.10.01. 09:46",
-      "stop": "26.03.27. 03:43",
-      "unit": "%",
-      "count": 450,
-      "interval": "1437\tperc"
-    }
-  },
-  "download_time": "2026-03-28T13:29:02.977793",
+  "download_time": "2026-03-28T14:23:11.906491",
   "rows": 13404,
   "date_range": [
     "2024-09-30 13:00:00",

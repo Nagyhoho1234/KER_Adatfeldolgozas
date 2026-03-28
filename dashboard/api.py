@@ -201,6 +201,16 @@ def get_timeseries(
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid end date")
 
+    # Also load raw data for comparison
+    raw_path = DATA_DIR / station_code / f"{station_code}_raw.csv"
+    raw_df = None
+    if raw_path.exists():
+        try:
+            raw_df = pd.read_csv(raw_path, parse_dates=["timestamp"], index_col="timestamp")
+            raw_df = raw_df.reindex(df.index)  # align to same timestamps
+        except Exception:
+            raw_df = None
+
     channels = ["CH0", "CH1", "CH3"]
     result = {
         "station_code": station_code,
@@ -215,6 +225,13 @@ def get_timeseries(
             result[ch] = [None if pd.isna(v) else float(v) for v in series]
         else:
             result[ch] = []
+
+    # Add raw CH3 for comparison chart
+    if raw_df is not None and "CH3" in raw_df.columns:
+        raw_ch3 = raw_df["CH3"]
+        result["CH3_raw"] = [None if pd.isna(v) else float(v) for v in raw_ch3]
+    else:
+        result["CH3_raw"] = []
 
     return result
 

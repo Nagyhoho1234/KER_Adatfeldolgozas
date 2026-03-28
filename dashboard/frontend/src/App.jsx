@@ -271,6 +271,17 @@ export default function App() {
                 layout={plotLayout('Vízszint (Water Level)', 'm', 320)}
                 config={plotConfig} useResizeHandler style={{ width: '100%' }}
               />
+              {tsData.CH3_raw && tsData.CH3_raw.length > 0 && (
+                <Plot
+                  data={[{
+                    x: tsData.timestamps, y: tsData.CH3_raw,
+                    type: 'scattergl', mode: 'lines', name: 'Raw observations',
+                    line: { color: '#aaa', width: 1 },
+                  }]}
+                  layout={plotLayout('Nyers vízszint (Raw Water Level)', 'm', 220)}
+                  config={plotConfig} useResizeHandler style={{ width: '100%' }}
+                />
+              )}
               <Plot
                 data={[{
                   x: tsData.timestamps, y: tsData.CH1,
