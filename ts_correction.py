@@ -1,13 +1,12 @@
 """
-ts_correction.py — Clean rewrite.
+ts_correction.py — Using ruptures (PELT) + hampel filter.
 
 Per channel:
   1. Resample to hourly
-  2. Remove spikes: median filter, anything > 5*MAD from rolling median → NaN
-  3. Segment by gaps > 3h
-  4. For each segment boundary: take median of last/first 7 DAYS (168h)
-     as the segment level. Spikes can't move a median.
-  5. Align segments backward (last segment = reference)
+  2. Hampel filter: remove spikes (robust median-based)
+  3. ruptures PELT: find all change points (level shifts)
+  4. Align segments to last segment (7-day median at boundaries)
+  5. Hampel again post-alignment (catch revealed spikes)
   6. Interpolate gaps ≤ 6h
 """
 
@@ -15,16 +14,20 @@ import sys
 import warnings
 import numpy as np
 import pandas as pd
+import ruptures as rpt
+from hampel import hampel
 from pathlib import Path
 
 warnings.filterwarnings("ignore")
 
 CHANNELS = ["CH0", "CH1", "CH3"]
 GAP_H = 3
-MEDIAN_WINDOW = 25
-SPIKE_K = 4
-ALIGN_DAYS = 7        # 7 days = 168 hours for robust boundary level
-INTERP_LIMIT = 6
+HAMPEL_WINDOW = 25       # hours
+HAMPEL_N_SIGMA = 4       # MADs for spike detection
+PELT_PEN = 20            # PELT penalty — higher = fewer changepoints
+PELT_MIN_SIZE = 24       # minimum segment size (hours)
+ALIGN_DAYS = 7           # 7-day median for boundary level estimation
+INTERP_LIMIT = 6         # max gap to interpolate (hours)
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 
@@ -37,116 +40,80 @@ def load(station_id):
     return df.resample("1h").first()
 
 
-def remove_spikes(s, window=MEDIAN_WINDOW, k=SPIKE_K, passes=3):
-    """Multi-pass median filter. Each pass removes spikes and recalculates."""
-    out = s.copy()
-    total = 0
-    for _ in range(passes):
-        med = out.rolling(window, center=True, min_periods=3).median()
-        dev = (out - med).abs()
-        mad = dev.rolling(window, center=True, min_periods=3).median()
-        mad = mad.replace(0, np.nan).fillna(dev.median())
-        if mad.max() == 0:
-            break
-        bad = dev > k * mad
-        n = bad.sum()
-        if n == 0:
-            break
-        out[bad] = np.nan
-        total += int(n)
-    return out, total
+def hampel_clean(s, window=HAMPEL_WINDOW, n_sigma=HAMPEL_N_SIGMA):
+    """Apply Hampel filter to remove spikes. Returns cleaned series + count."""
+    valid = s.dropna()
+    if len(valid) < window * 2:
+        return s, 0
+    result = hampel(valid, window_size=window, n_sigma=float(n_sigma))
+    cleaned = s.copy()
+    outlier_idx = result.outlier_indices  # integer positions in valid
+    n_changed = len(outlier_idx)
+    if n_changed > 0:
+        # Convert integer positions to actual timestamps
+        outlier_timestamps = valid.index[outlier_idx]
+        cleaned.loc[outlier_timestamps] = np.nan
+    return cleaned, n_changed
 
 
-def segment(s, gap_h=GAP_H):
-    """Split into contiguous sections separated by gaps > gap_h."""
+def find_changepoints(s, pen=PELT_PEN, min_size=PELT_MIN_SIZE):
+    """Use ruptures PELT to find level shifts. Returns list of breakpoint indices."""
+    valid = s.dropna()
+    if len(valid) < min_size * 3:
+        return []
+
+    signal = valid.values.reshape(-1, 1)
+    algo = rpt.Pelt(model="l1", min_size=min_size, jump=5)
+    try:
+        result = algo.fit_predict(signal, pen=pen)
+    except Exception:
+        return []
+
+    # result contains breakpoint indices (last element is len(signal))
+    # Convert to timestamps
+    breakpoints = []
+    for bp in result[:-1]:  # skip the last one (end of signal)
+        if 0 < bp < len(valid):
+            breakpoints.append(valid.index[bp])
+    return breakpoints
+
+
+def segment_by_gaps_and_changepoints(s, gap_h=GAP_H, pen=PELT_PEN):
+    """Segment by both data gaps AND detected changepoints."""
     valid = s.dropna()
     if len(valid) == 0:
         return []
+
+    # Find gaps
     dt = valid.index.to_series().diff()
-    breaks = valid.index[dt > pd.Timedelta(hours=gap_h)]
+    gap_breaks = set(valid.index[dt > pd.Timedelta(hours=gap_h)])
+
+    # Find changepoints
+    cp_breaks = set(find_changepoints(s, pen=pen))
+
+    # Combine all break points
+    all_breaks = sorted(gap_breaks | cp_breaks)
+
+    # Build sections
     sections = []
     start = valid.index[0]
-    for bp in breaks:
-        sec = valid.loc[start:bp].iloc[:-1]
+    for bp in all_breaks:
+        sec = valid.loc[start:bp]
+        if bp in gap_breaks:
+            sec = sec.iloc[:-1] if len(sec) > 1 else sec
         if len(sec) > 0:
             sections.append((sec.index[0], sec.index[-1]))
         start = bp
     sec = valid.loc[start:]
     if len(sec) > 0:
         sections.append((sec.index[0], sec.index[-1]))
+
     return sections
 
 
-def split_at_shifts(s, sections, days=ALIGN_DAYS, k=3.0):
-    """Split segments at internal level shifts.
-    Compare 7-day median before vs after each point.
-    If the difference exceeds k * local_MAD → split there."""
-    hrs = days * 24
-    new_sections = []
-
-    for (start, end) in sections:
-        sec = s.loc[start:end].dropna()
-        if len(sec) < hrs * 3:
-            new_sections.append((start, end))
-            continue
-
-        vals = sec.values
-        n = len(vals)
-
-        # Compute local MAD of first differences (measure of normal variability)
-        diffs = np.abs(np.diff(vals))
-        local_mad = np.nanmedian(diffs)
-        if local_mad == 0:
-            local_mad = np.nanmean(diffs)
-        if local_mad == 0:
-            new_sections.append((start, end))
-            continue
-
-        # Threshold: a shift must exceed k * typical_step * sqrt(hrs)
-        # (the median over hrs points reduces noise by ~sqrt(hrs))
-        threshold = k * local_mad * np.sqrt(hrs)
-
-        # Scan for shifts: compare 7-day median before vs after
-        jumps = np.zeros(n)
-        for i in range(hrs, n - hrs):
-            before_med = np.nanmedian(vals[i - hrs:i])
-            after_med = np.nanmedian(vals[i:i + hrs])
-            jumps[i] = after_med - before_med
-
-        # Find significant shifts
-        abs_jumps = np.abs(jumps)
-        candidates = np.where(abs_jumps > threshold)[0]
-
-        if len(candidates) == 0:
-            new_sections.append((start, end))
-            continue
-
-        # Cluster and pick the strongest in each cluster
-        split_points = []
-        i = 0
-        while i < len(candidates):
-            cluster = [candidates[i]]
-            j = i + 1
-            while j < len(candidates) and candidates[j] - candidates[j-1] <= hrs:
-                cluster.append(candidates[j])
-                j += 1
-            best = cluster[np.argmax(abs_jumps[cluster])]
-            split_points.append(best)
-            i = j
-
-        # Split the section
-        bounds = [0] + split_points + [n]
-        for bi in range(len(bounds) - 1):
-            sub = sec.iloc[bounds[bi]:bounds[bi + 1]]
-            if len(sub) >= 12:
-                new_sections.append((sub.index[0], sub.index[-1]))
-
-    return new_sections
-
-
 def align(s, sections, days=ALIGN_DAYS):
-    """Align segments using median of last/first N days as boundary level.
-    Last segment = reference (offset 0). Walk backwards."""
+    """Align segments using 7-day median at boundaries.
+    Last segment = reference. Walk backwards."""
     out = s.copy()
     n = len(sections)
     if n < 2:
@@ -156,7 +123,6 @@ def align(s, sections, days=ALIGN_DAYS):
     offsets = [0.0] * n
 
     for i in range(n - 2, -1, -1):
-        # This segment's end level: median of last N days
         cs, ce = sections[i]
         ns, ne = sections[i + 1]
 
@@ -180,49 +146,54 @@ def align(s, sections, days=ALIGN_DAYS):
     return out, offsets
 
 
+def process_channel(args):
+    """Process a single channel for a single station. Designed for parallel execution."""
+    station_id, ch = args
+    df = load(station_id)
+    if ch not in df.columns:
+        return station_id, ch, None, ""
+
+    s = df[ch].copy()
+    n_raw = int(s.notna().sum())
+
+    # 1. Hampel filter — remove spikes
+    s, n_spikes1 = hampel_clean(s)
+
+    # 2. Segment by gaps + PELT changepoints
+    secs = segment_by_gaps_and_changepoints(s)
+
+    # 3. Align using 7-day median
+    s, offsets = align(s, secs)
+
+    # 4. Hampel again post-alignment
+    s, n_spikes2 = hampel_clean(s)
+
+    # 5. Interpolate small gaps
+    before_nan = int(s.isna().sum())
+    s = s.interpolate(method="time", limit=INTERP_LIMIT)
+    n_interp = before_nan - int(s.isna().sum())
+
+    n_final = int(s.notna().sum())
+    max_shift = max(abs(o) for o in offsets) if offsets else 0
+    msg = (f"    {ch}: {len(secs)} segs, {n_spikes1+n_spikes2} spikes, "
+           f"max_shift={max_shift:.3f}, {n_final}/{n_raw} "
+           f"({100*n_final/len(s):.1f}%)")
+
+    return station_id, ch, s, msg
+
+
 def process(station_id, verbose=True):
+    """Non-parallel fallback for single station."""
     if verbose:
         print(f"\n  {station_id}")
-
     df = load(station_id)
     result = df.copy()
-
     for ch in CHANNELS:
-        if ch not in df.columns:
-            continue
-
-        s = df[ch].copy()
-        n_raw = int(s.notna().sum())
-
-        # 1. Remove spikes (3 passes)
-        s, n_spikes = remove_spikes(s)
-
-        # 2. Segment by gaps
-        secs = segment(s)
-
-        # 3. Split segments at internal level shifts
-        secs = split_at_shifts(s, secs)
-
-        # 4. Align using 7-day median at boundaries
-        s, offsets = align(s, secs)
-
-        # 4. One more spike pass after alignment (catches spikes revealed by shift)
-        s, n_spikes2 = remove_spikes(s, passes=1)
-
-        # 5. Interpolate small gaps
-        before_nan = int(s.isna().sum())
-        s = s.interpolate(method="time", limit=INTERP_LIMIT)
-        n_interp = before_nan - int(s.isna().sum())
-
-        result[ch] = s
-        n_final = int(s.notna().sum())
-        max_shift = max(abs(o) for o in offsets) if offsets else 0
-
-        if verbose:
-            print(f"    {ch}: {len(secs)} segs, {n_spikes+n_spikes2} spikes, "
-                  f"max_shift={max_shift:.3f}, {n_final}/{n_raw} "
-                  f"({100*n_final/len(s):.1f}%)")
-
+        _, _, s, msg = process_channel((station_id, ch))
+        if s is not None:
+            result[ch] = s
+            if verbose:
+                print(msg)
     out_path = DATA_DIR / station_id / f"{station_id}_corrected.csv"
     result.to_csv(out_path)
     if verbose:
@@ -240,13 +211,37 @@ def main():
             and (p / f"{p.name}_raw.csv").exists()
         ])
 
-    print(f"Processing {len(stations)} stations")
+    # Build all (station, channel) tasks — 18 stations × 3 channels = 54 tasks
+    from concurrent.futures import ProcessPoolExecutor, as_completed
+    tasks = [(st, ch) for st in stations for ch in CHANNELS]
+    print(f"Processing {len(tasks)} tasks ({len(stations)} stations × {len(CHANNELS)} channels) on 32 cores")
+
+    results = {}  # station -> {ch: series}
+    with ProcessPoolExecutor(max_workers=32) as pool:
+        futures = {pool.submit(process_channel, t): t for t in tasks}
+        for f in as_completed(futures):
+            try:
+                station_id, ch, s, msg = f.result()
+                if s is not None:
+                    if station_id not in results:
+                        results[station_id] = {}
+                    results[station_id][ch] = s
+                    print(msg)
+            except Exception as e:
+                st, ch = futures[f]
+                print(f"  {st}/{ch}: ERROR {e}")
+
+    # Write results
     for st in stations:
-        try:
-            process(st)
-        except Exception as e:
-            print(f"  {st}: ERROR {e}")
-            import traceback; traceback.print_exc()
+        if st not in results:
+            continue
+        df = load(st)
+        for ch, s in results[st].items():
+            df[ch] = s
+        out_path = DATA_DIR / st / f"{st}_corrected.csv"
+        df.to_csv(out_path)
+        print(f"  {st} -> {out_path}")
+
     print("\nDone.")
 
 
