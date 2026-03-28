@@ -1,0 +1,229 @@
+{
+  "total_rows": 13053,
+  "date_range": [
+    "2024-10-01 09:00:00",
+    "2026-03-28 00:00:00"
+  ],
+  "columns": [
+    "CH0",
+    "CH1",
+    "CH3",
+    "CHGEPV",
+    "CHGMSQ"
+  ],
+  "issues": [
+    {
+      "type": "gaps",
+      "count": 85,
+      "total_missing_hours": 407.6,
+      "largest_gap_hours": 121.0,
+      "details": [
+        {
+          "start": "2024-10-08 12:00:00",
+          "end": "2024-10-08 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-10-16 12:00:00",
+          "end": "2024-10-16 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-10-18 12:00:00",
+          "end": "2024-10-18 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-10-27 12:00:00",
+          "end": "2024-10-27 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-11-04 12:00:00",
+          "end": "2024-11-04 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-11-09 12:00:00",
+          "end": "2024-11-09 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-11-10 12:00:00",
+          "end": "2024-11-10 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-11-12 12:00:00",
+          "end": "2024-11-12 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-11-14 12:00:00",
+          "end": "2024-11-14 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-11-20 12:00:00",
+          "end": "2024-11-20 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-11-23 12:00:00",
+          "end": "2024-11-23 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-11-28 12:00:00",
+          "end": "2024-11-28 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-12-01 12:00:00",
+          "end": "2024-12-01 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-12-09 12:00:00",
+          "end": "2024-12-09 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-12-12 12:00:00",
+          "end": "2024-12-12 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-12-20 12:00:00",
+          "end": "2024-12-20 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-12-21 12:00:00",
+          "end": "2024-12-21 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-12-24 12:00:00",
+          "end": "2024-12-24 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2024-12-29 12:00:00",
+          "end": "2024-12-29 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        },
+        {
+          "start": "2025-01-02 12:00:00",
+          "end": "2025-01-02 14:00:00",
+          "duration_hours": 2.0,
+          "missing_steps": 1
+        }
+      ]
+    },
+    {
+      "type": "irregular_intervals",
+      "count": 703,
+      "dominant_interval_minutes": 60.0,
+      "examples_minutes": [
+        50.1,
+        9.9,
+        46.4,
+        13.6,
+        44.0,
+        16.0,
+        44.2,
+        15.8,
+        45.8,
+        14.2
+      ]
+    },
+    {
+      "type": "constant_runs",
+      "column": "CH0",
+      "longest_run": 28,
+      "count": 1
+    },
+    {
+      "type": "constant_runs",
+      "column": "CH1",
+      "longest_run": 388,
+      "count": 60
+    },
+    {
+      "type": "constant_runs",
+      "column": "CH3",
+      "longest_run": 73,
+      "count": 30
+    }
+  ],
+  "column_stats": {
+    "CH0": {
+      "count": 12689,
+      "missing": 364,
+      "missing_pct": 2.8,
+      "min": 0.02,
+      "max": 0.862,
+      "mean": 0.6924,
+      "std": 0.072,
+      "outliers_4sigma": 4
+    },
+    "CH1": {
+      "count": 11255,
+      "missing": 1798,
+      "missing_pct": 13.8,
+      "min": 11.258,
+      "max": 13.681,
+      "mean": 13.2731,
+      "std": 0.198,
+      "outliers_4sigma": 1
+    },
+    "CH3": {
+      "count": 10738,
+      "missing": 2315,
+      "missing_pct": 17.7,
+      "min": -11.44,
+      "max": -2.275,
+      "mean": -3.0477,
+      "std": 0.3679,
+      "outliers_4sigma": 2
+    },
+    "CHGEPV": {
+      "count": 352,
+      "missing": 12701,
+      "missing_pct": 97.3,
+      "min": 11954.0,
+      "max": 12713.0,
+      "mean": 12253.1591,
+      "std": 184.4281
+    },
+    "CHGMSQ": {
+      "count": 352,
+      "missing": 12701,
+      "missing_pct": 97.3,
+      "min": 30.0,
+      "max": 74.0,
+      "mean": 57.9688,
+      "std": 7.5709
+    }
+  }
+}

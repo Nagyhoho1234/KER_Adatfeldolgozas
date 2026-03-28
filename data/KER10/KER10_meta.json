@@ -1,0 +1,51 @@
+{
+  "station_code": "KER10",
+  "station_name": "Debrecen, Angyalföld tér 4.",
+  "lat": 47.525,
+  "lng": 21.604,
+  "eovx": 245494,
+  "eovy": 842455,
+  "channels": {
+    "CH0": {
+      "start": "24.09.30. 10:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "mS/cm",
+      "count": 12934,
+      "interval": "60\tperc"
+    },
+    "CH1": {
+      "start": "24.09.30. 10:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "°C",
+      "count": 12934,
+      "interval": "60\tperc"
+    },
+    "CH3": {
+      "start": "24.09.30. 10:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "m",
+      "count": 12920,
+      "interval": "60\tperc"
+    },
+    "CHGEPV": {
+      "start": "24.10.01. 09:43",
+      "stop": "26.03.27. 09:43",
+      "unit": "mV",
+      "count": 525,
+      "interval": "1440\tperc"
+    },
+    "CHGMSQ": {
+      "start": "24.10.01. 09:43",
+      "stop": "26.03.27. 09:43",
+      "unit": "%",
+      "count": 525,
+      "interval": "1440\tperc"
+    }
+  },
+  "download_time": "2026-03-28T13:28:11.323551",
+  "rows": 13459,
+  "date_range": [
+    "2024-09-30 10:00:00",
+    "2026-03-28 00:00:00"
+  ]
+}

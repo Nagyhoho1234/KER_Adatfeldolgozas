@@ -1,0 +1,51 @@
+{
+  "station_code": "KER14",
+  "station_name": "Mikepércs, Rózsás u.",
+  "lat": 47.447,
+  "lng": 21.631,
+  "eovx": 236934,
+  "eovy": 844776,
+  "channels": {
+    "CH0": {
+      "start": "24.09.30. 16:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "mS/cm",
+      "count": 12961,
+      "interval": "60\tperc"
+    },
+    "CH1": {
+      "start": "24.09.30. 16:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "°C",
+      "count": 12562,
+      "interval": "60\tperc"
+    },
+    "CH3": {
+      "start": "24.09.30. 16:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "m",
+      "count": 12418,
+      "interval": "60\tperc"
+    },
+    "CHGEPV": {
+      "start": "24.10.01. 09:47",
+      "stop": "26.03.27. 03:43",
+      "unit": "mV",
+      "count": 527,
+      "interval": "1437\tperc"
+    },
+    "CHGMSQ": {
+      "start": "24.10.01. 09:47",
+      "stop": "26.03.27. 03:43",
+      "unit": "%",
+      "count": 527,
+      "interval": "1437\tperc"
+    }
+  },
+  "download_time": "2026-03-28T13:29:54.203259",
+  "rows": 13319,
+  "date_range": [
+    "2024-09-30 16:00:00",
+    "2026-03-28 00:00:00"
+  ]
+}

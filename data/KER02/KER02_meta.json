@@ -1,0 +1,51 @@
+{
+  "station_code": "KER02",
+  "station_name": "Debrecen, M35 Józsa új csomópont",
+  "lat": 47.591,
+  "lng": 21.529,
+  "eovx": 252604,
+  "eovy": 836601,
+  "channels": {
+    "CH0": {
+      "start": "25.09.15. 14:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "mS/cm",
+      "count": 2505,
+      "interval": "60\tperc"
+    },
+    "CH1": {
+      "start": "25.09.15. 14:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "°C",
+      "count": 2461,
+      "interval": "60\tperc"
+    },
+    "CH3": {
+      "start": "25.09.16. 00:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "m",
+      "count": 2353,
+      "interval": "60\tperc"
+    },
+    "CHGEPV": {
+      "start": "25.09.18. 09:49",
+      "stop": "26.03.27. 03:46",
+      "unit": "mV",
+      "count": 86,
+      "interval": "1433\tperc"
+    },
+    "CHGMSQ": {
+      "start": "25.09.18. 09:49",
+      "stop": "26.03.27. 03:46",
+      "unit": "%",
+      "count": 86,
+      "interval": "1433\tperc"
+    }
+  },
+  "download_time": "2026-03-28T13:28:48.722247",
+  "rows": 2591,
+  "date_range": [
+    "2025-09-15 14:00:00",
+    "2026-03-28 00:00:00"
+  ]
+}

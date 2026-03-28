@@ -1,0 +1,129 @@
+{
+  "1361": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Angyalföld tér 4.",
+    "code": "KER10",
+    "instruments": [
+      "202404018"
+    ]
+  },
+  "1364": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Bem tér 18/C",
+    "code": "KER15",
+    "instruments": [
+      "202404021"
+    ]
+  },
+  "1359": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Benczúr Gyula u. 5.",
+    "code": "KER08",
+    "instruments": [
+      "202404016"
+    ]
+  },
+  "1367": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, BMW körút",
+    "code": "KER01",
+    "instruments": [
+      "202404023"
+    ]
+  },
+  "1355": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, DGÖ 481-47 keresztezõdés",
+    "code": "KER04",
+    "instruments": [
+      "202404012"
+    ]
+  },
+  "1357": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Karácsony György u.",
+    "code": "KER06",
+    "instruments": [
+      "202404014"
+    ]
+  },
+  "1353": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, M35 Józsa új csomópont",
+    "code": "KER02",
+    "instruments": [
+      "202404028",
+      "202404010"
+    ]
+  },
+  "1360": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Sétakert u. 1-3.",
+    "code": "KER09",
+    "instruments": [
+      "202404017"
+    ]
+  },
+  "1356": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Szabó Pál u. 59.",
+    "code": "KER05",
+    "instruments": [
+      "202404013"
+    ]
+  },
+  "1358": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Szávay Gyula u. 55/F",
+    "code": "KER07",
+    "instruments": [
+      "202404015"
+    ]
+  },
+  "1370": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Tócó 22+105",
+    "code": "KER16",
+    "instruments": [
+      "202404026"
+    ]
+  },
+  "1371": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Tócó-481",
+    "code": "KER17",
+    "instruments": [
+      "202404027"
+    ]
+  },
+  "1362": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Vezér úti víztározó",
+    "code": "KER13",
+    "instruments": [
+      "202404019"
+    ]
+  },
+  "1369": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen, Wesselényi ltp.",
+    "code": "KER11M",
+    "instruments": [
+      "202404024"
+    ]
+  },
+  "1368": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen-Haláp, Erdei iskola",
+    "code": "KER12",
+    "instruments": [
+      "202404025"
+    ]
+  },
+  "1365": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Debrecen-Józsa, Klastrompart sor",
+    "code": "KER18",
+    "instruments": [
+      "202404022"
+    ]
+  },
+  "1363": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Mikepércs, Rózsás u.",
+    "code": "KER14",
+    "instruments": [
+      "202404020"
+    ]
+  },
+  "1354": {
+    "name": "img src='images/status/st_green_imp.png' border='0' />-->Szepes, Sárga dûlõ",
+    "code": "KER03",
+    "instruments": [
+      "202404011"
+    ]
+  }
+}

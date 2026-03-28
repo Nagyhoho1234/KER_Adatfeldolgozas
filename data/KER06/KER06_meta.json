@@ -1,0 +1,51 @@
+{
+  "station_code": "KER06",
+  "station_name": "Debrecen, Karácsony György u.",
+  "lat": 47.533,
+  "lng": 21.645,
+  "eovx": 246493,
+  "eovy": 845546,
+  "channels": {
+    "CH0": {
+      "start": "24.09.30. 14:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "mS/cm",
+      "count": 12994,
+      "interval": "60\tperc"
+    },
+    "CH1": {
+      "start": "24.09.30. 14:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "°C",
+      "count": 12994,
+      "interval": "60\tperc"
+    },
+    "CH3": {
+      "start": "24.09.30. 14:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "m",
+      "count": 12980,
+      "interval": "60\tperc"
+    },
+    "CHGEPV": {
+      "start": "24.10.01. 09:45",
+      "stop": "26.03.27. 09:43",
+      "unit": "mV",
+      "count": 529,
+      "interval": "1438\tperc"
+    },
+    "CHGMSQ": {
+      "start": "24.10.01. 09:45",
+      "stop": "26.03.27. 09:43",
+      "unit": "%",
+      "count": 529,
+      "interval": "1438\tperc"
+    }
+  },
+  "download_time": "2026-03-28T13:28:46.853191",
+  "rows": 13522,
+  "date_range": [
+    "2024-09-30 14:00:00",
+    "2026-03-28 00:00:00"
+  ]
+}

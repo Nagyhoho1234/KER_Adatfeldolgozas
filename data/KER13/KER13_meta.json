@@ -1,0 +1,51 @@
+{
+  "station_code": "KER13",
+  "station_name": "Debrecen, Vezér úti víztározó",
+  "lat": 47.558,
+  "lng": 21.596,
+  "eovx": 249088,
+  "eovy": 841755,
+  "channels": {
+    "CH0": {
+      "start": "24.10.03. 09:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "mS/cm",
+      "count": 12922,
+      "interval": "60\tperc"
+    },
+    "CH1": {
+      "start": "24.10.03. 09:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "°C",
+      "count": 12912,
+      "interval": "60\tperc"
+    },
+    "CH3": {
+      "start": "24.10.03. 09:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "m",
+      "count": 12892,
+      "interval": "60\tperc"
+    },
+    "CHGEPV": {
+      "start": "24.10.03. 09:46",
+      "stop": "26.03.27. 09:42",
+      "unit": "mV",
+      "count": 523,
+      "interval": "1437\tperc"
+    },
+    "CHGMSQ": {
+      "start": "24.10.03. 09:46",
+      "stop": "26.03.27. 09:42",
+      "unit": "%",
+      "count": 523,
+      "interval": "1437\tperc"
+    }
+  },
+  "download_time": "2026-03-28T13:29:28.096608",
+  "rows": 13445,
+  "date_range": [
+    "2024-10-03 09:00:00",
+    "2026-03-28 00:00:00"
+  ]
+}

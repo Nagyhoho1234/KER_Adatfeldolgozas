@@ -1,0 +1,51 @@
+{
+  "station_code": "KER09",
+  "station_name": "Debrecen, Sétakert u. 1-3.",
+  "lat": 47.545,
+  "lng": 21.617,
+  "eovx": 247794,
+  "eovy": 843367,
+  "channels": {
+    "CH0": {
+      "start": "24.09.30. 11:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "mS/cm",
+      "count": 12996,
+      "interval": "60\tperc"
+    },
+    "CH1": {
+      "start": "24.09.30. 11:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "°C",
+      "count": 12996,
+      "interval": "60\tperc"
+    },
+    "CH3": {
+      "start": "24.09.30. 11:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "m",
+      "count": 12983,
+      "interval": "60\tperc"
+    },
+    "CHGEPV": {
+      "start": "24.10.01. 09:45",
+      "stop": "26.03.27. 09:43",
+      "unit": "mV",
+      "count": 531,
+      "interval": "1438\tperc"
+    },
+    "CHGMSQ": {
+      "start": "24.10.01. 09:45",
+      "stop": "26.03.27. 09:43",
+      "unit": "%",
+      "count": 531,
+      "interval": "1438\tperc"
+    }
+  },
+  "download_time": "2026-03-28T13:28:56.010784",
+  "rows": 13527,
+  "date_range": [
+    "2024-09-30 11:00:00",
+    "2026-03-28 00:00:00"
+  ]
+}

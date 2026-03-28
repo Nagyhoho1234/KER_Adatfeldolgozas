@@ -1,0 +1,51 @@
+{
+  "station_code": "KER01",
+  "station_name": "Debrecen, BMW körút",
+  "lat": 47.577,
+  "lng": 21.504,
+  "eovx": 251021,
+  "eovy": 834757,
+  "channels": {
+    "CH0": {
+      "start": "24.11.03. 00:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "mS/cm",
+      "count": 10283,
+      "interval": "60\tperc"
+    },
+    "CH1": {
+      "start": "24.11.03. 00:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "°C",
+      "count": 10206,
+      "interval": "60\tperc"
+    },
+    "CH3": {
+      "start": "24.11.03. 00:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "m",
+      "count": 10136,
+      "interval": "60\tperc"
+    },
+    "CHGEPV": {
+      "start": "24.11.04. 09:43",
+      "stop": "26.03.27. 03:44",
+      "unit": "mV",
+      "count": 407,
+      "interval": "1440\tperc"
+    },
+    "CHGMSQ": {
+      "start": "24.11.04. 09:43",
+      "stop": "26.03.27. 03:44",
+      "unit": "%",
+      "count": 407,
+      "interval": "1440\tperc"
+    }
+  },
+  "download_time": "2026-03-28T13:28:32.452835",
+  "rows": 10690,
+  "date_range": [
+    "2024-11-03 00:00:00",
+    "2026-03-28 00:00:00"
+  ]
+}

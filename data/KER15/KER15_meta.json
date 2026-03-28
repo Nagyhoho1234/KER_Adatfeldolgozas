@@ -1,0 +1,51 @@
+{
+  "station_code": "KER15",
+  "station_name": "Debrecen, Bem tér 18/C",
+  "lat": 47.544,
+  "lng": 21.623,
+  "eovx": 247604,
+  "eovy": 843849,
+  "channels": {
+    "CH0": {
+      "start": "24.09.30. 11:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "mS/cm",
+      "count": 13004,
+      "interval": "60\tperc"
+    },
+    "CH1": {
+      "start": "24.09.30. 11:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "°C",
+      "count": 12919,
+      "interval": "60\tperc"
+    },
+    "CH3": {
+      "start": "24.09.30. 11:00",
+      "stop": "26.03.28. 00:00",
+      "unit": "m",
+      "count": 12830,
+      "interval": "60\tperc"
+    },
+    "CHGEPV": {
+      "start": "24.10.01. 09:46",
+      "stop": "26.03.27. 03:43",
+      "unit": "mV",
+      "count": 523,
+      "interval": "1437\tperc"
+    },
+    "CHGMSQ": {
+      "start": "24.10.01. 09:46",
+      "stop": "26.03.27. 03:43",
+      "unit": "%",
+      "count": 523,
+      "interval": "1437\tperc"
+    }
+  },
+  "download_time": "2026-03-28T13:28:19.005030",
+  "rows": 13527,
+  "date_range": [
+    "2024-09-30 11:00:00",
+    "2026-03-28 00:00:00"
+  ]
+}
