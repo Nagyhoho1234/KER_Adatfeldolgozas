@@ -1,0 +1,230 @@
+{
+  "base_url": "https://monitoring.dataqua.hu",
+  "credentials": {
+    "userlogin": "DebVar",
+    "password": "D3br3c3n"
+  },
+  "export_format": "txt",
+  "output_dir": "data",
+  "stations": {
+    "1361": {
+      "name": "Debrecen, Angyalföld tér 4.",
+      "code": "KER10",
+      "lat": 47.525, "lng": 21.604, "eovx": 245494, "eovy": 842455,
+      "instruments": [{"instid": "202404018", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1364": {
+      "name": "Debrecen, Bem tér 18/C",
+      "code": "KER15",
+      "lat": 47.544, "lng": 21.623, "eovx": 247604, "eovy": 843849,
+      "instruments": [{"instid": "202404021", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1359": {
+      "name": "Debrecen, Benczúr Gyula u. 5.",
+      "code": "KER08",
+      "lat": 47.561, "lng": 21.634, "eovx": 249567, "eovy": 844629,
+      "instruments": [{"instid": "202404016", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1367": {
+      "name": "Debrecen, BMW körút",
+      "code": "KER01",
+      "lat": 47.577, "lng": 21.504, "eovx": 251021, "eovy": 834757,
+      "instruments": [{"instid": "202404023", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1355": {
+      "name": "Debrecen, DGÚ 481-47 kereszteződés",
+      "code": "KER04",
+      "lat": 47.462, "lng": 21.633, "eovx": 238519, "eovy": 844900,
+      "instruments": [{"instid": "202404012", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1357": {
+      "name": "Debrecen, Karácsony György u.",
+      "code": "KER06",
+      "lat": 47.533, "lng": 21.645, "eovx": 246493, "eovy": 845546,
+      "instruments": [{"instid": "202404014", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1353": {
+      "name": "Debrecen, M35 Józsa új csomópont",
+      "code": "KER02",
+      "lat": 47.591, "lng": 21.529, "eovx": 252604, "eovy": 836601,
+      "instruments": [
+        {"instid": "202404028", "channels": [
+          {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+          {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+          {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+          {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+          {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+        ]},
+        {"instid": "202404010", "channels": []}
+      ]
+    },
+    "1360": {
+      "name": "Debrecen, Sétakert u. 1-3.",
+      "code": "KER09",
+      "lat": 47.545, "lng": 21.617, "eovx": 247794, "eovy": 843367,
+      "instruments": [{"instid": "202404017", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1356": {
+      "name": "Debrecen, Szabó Pál u. 59.",
+      "code": "KER05",
+      "lat": 47.548, "lng": 21.669, "eovx": 248229, "eovy": 847320,
+      "instruments": [{"instid": "202404013", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1358": {
+      "name": "Debrecen, Szávay Gyula u. 55/F",
+      "code": "KER07",
+      "lat": 47.505, "lng": 21.636, "eovx": 243355, "eovy": 844951,
+      "instruments": [{"instid": "202404015", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1370": {
+      "name": "Debrecen, Tócó 22+105",
+      "code": "KER16",
+      "lat": 47.595, "lng": 21.583, "eovx": 253247, "eovy": 840626,
+      "instruments": [{"instid": "202404026", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1371": {
+      "name": "Debrecen, Tócó-481",
+      "code": "KER17",
+      "lat": 47.458, "lng": 21.6, "eovx": 238008, "eovy": 842417,
+      "instruments": [{"instid": "202404027", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1362": {
+      "name": "Debrecen, Vezér úti víztározó",
+      "code": "KER13",
+      "lat": 47.558, "lng": 21.596, "eovx": 249088, "eovy": 841755,
+      "instruments": [{"instid": "202404019", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1369": {
+      "name": "Debrecen, Wesselényi ltp.",
+      "code": "KER11M",
+      "lat": 47.524, "lng": 21.633, "eovx": 245425, "eovy": 844675,
+      "instruments": [{"instid": "202404024", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1368": {
+      "name": "Debrecen-Haláp, Erdei iskola",
+      "code": "KER12",
+      "lat": 47.558, "lng": 21.837, "eovx": 249782, "eovy": 859915,
+      "instruments": [{"instid": "202404025", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1365": {
+      "name": "Debrecen-Józsa, Klastrompart sor",
+      "code": "KER18",
+      "lat": 47.598, "lng": 21.58, "eovx": 253512, "eovy": 840432,
+      "instruments": [{"instid": "202404022", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1363": {
+      "name": "Mikepércs, Rózsás u.",
+      "code": "KER14",
+      "lat": 47.447, "lng": 21.631, "eovx": 236934, "eovy": 844776,
+      "instruments": [{"instid": "202404020", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    },
+    "1354": {
+      "name": "Szepes, Sárga dűlő",
+      "code": "KER03",
+      "lat": 47.464, "lng": 21.589, "eovx": 238719, "eovy": 841546,
+      "instruments": [{"instid": "202404011", "channels": [
+        {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+        {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+        {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+        {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+        {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+      ]}]
+    }
+  }
+}
