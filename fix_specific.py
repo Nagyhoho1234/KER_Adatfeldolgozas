@@ -59,12 +59,14 @@ def fix_ker02(verbose=True):
     df = df.dropna(how="all")
     df = df.resample("1h").first()
 
-    # Define era boundaries per channel (detected from raw data analysis)
-    # CH3 switches at Sep 16 00:00, CH1 switches at Sep 15 14:00, CH0 at Sep 16
+    # Define era boundaries per channel (from raw data analysis)
+    # CH3 has extra intra-instrument shifts in Jun and Aug 2025
+    # CH1 switches at Sep 15 14:00, CH0/CH3 at Sep 16 00:00
     era_splits_per_ch = {
-        "CH0": [pd.Timestamp("2025-09-16"), pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-21")],
-        "CH1": [pd.Timestamp("2025-09-15 14:00"), pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-21")],
-        "CH3": [pd.Timestamp("2025-09-16"), pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-21")],
+        "CH0": [pd.Timestamp("2025-09-16"), pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-19")],
+        "CH1": [pd.Timestamp("2025-09-15 14:00"), pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-19")],
+        "CH3": [pd.Timestamp("2025-06-17"), pd.Timestamp("2025-08-08"),
+                pd.Timestamp("2025-09-16"), pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-19")],
     }
 
     for ch in channels:
@@ -81,18 +83,21 @@ def fix_ker02(verbose=True):
             s[dev > 5 * roll_mad] = np.nan
 
         # 2. Remove CH0 end spike (Mar 19+ conductivity sensor failure)
+        #    The values jump from ~1.34 to ~3.4, clearly sensor failure
         if ch == "CH0":
-            end_vals = s['2026-03-18':].dropna()
-            if len(end_vals) > 48:
-                stable = end_vals.iloc[:48]
-                stable_med = stable.median()
-                stable_mad = (stable - stable_med).abs().median()
-                if stable_mad > 0:
-                    for ts in end_vals.index:
-                        if pd.notna(s[ts]) and abs(s[ts] - stable_med) > 10 * stable_mad:
-                            s[ts] = np.nan
+            stable_period = s['2026-02-21':'2026-03-18'].dropna()
+            if len(stable_period) > 24:
+                stable_med = stable_period.median()
+                stable_mad = (stable_period - stable_med).abs().median()
+                if stable_mad == 0:
+                    stable_mad = 0.01
+                # Remove anything after the stable period that deviates >5*MAD
+                for ts in s['2026-03-19':].index:
+                    if pd.notna(s[ts]) and abs(s[ts] - stable_med) > 5 * stable_mad:
+                        s[ts] = np.nan
 
-        # 3. Multi-era alignment: split into eras, align to last era
+        # 3. Multi-era alignment: chain from last era backwards
+        #    Match each era's END to the next era's START
         era_splits = era_splits_per_ch.get(ch, era_splits_per_ch["CH3"])
         boundaries = [s.index.min()] + era_splits + [s.index.max() + pd.Timedelta(hours=1)]
         eras = []
@@ -100,20 +105,28 @@ def fix_ker02(verbose=True):
             era = s[boundaries[i]:boundaries[i+1]]
             era_valid = era.dropna()
             if len(era_valid) >= 6:
-                level = era_valid.iloc[:min(48, len(era_valid))].median()
+                start_level = era_valid.iloc[:min(24, len(era_valid))].median()
+                end_level = era_valid.iloc[-min(24, len(era_valid)):].median()
                 eras.append({"start": boundaries[i], "end": boundaries[i+1],
-                            "level": level, "n": len(era_valid)})
+                            "start_level": start_level, "end_level": end_level,
+                            "n": len(era_valid)})
 
         if len(eras) >= 2:
-            # Last era is reference
-            ref_level = eras[-1]["level"]
-            for era in eras[:-1]:
-                offset = ref_level - era["level"]
-                mask = (s.index >= era["start"]) & (s.index < era["end"])
-                s.loc[mask & s.notna()] += offset
-                if verbose:
-                    print(f"    {ch} era {era['start'].strftime('%Y-%m')} to "
-                          f"{era['end'].strftime('%Y-%m')}: offset {offset:+.3f}")
+            # Walk backwards: last era = reference (offset 0)
+            offsets = [0.0] * len(eras)
+            for i in range(len(eras) - 2, -1, -1):
+                # Match this era's END to next era's START (after next is shifted)
+                this_end = eras[i]["end_level"]
+                next_start = eras[i + 1]["start_level"]
+                offsets[i] = (next_start - this_end) + offsets[i + 1]
+
+            for i, era in enumerate(eras):
+                if offsets[i] != 0:
+                    mask = (s.index >= era["start"]) & (s.index < era["end"])
+                    s.loc[mask & s.notna()] += offsets[i]
+                    if verbose:
+                        print(f"    {ch} era {era['start'].strftime('%Y-%m')} to "
+                              f"{era['end'].strftime('%Y-%m')}: offset {offsets[i]:+.4f}")
 
         # 4. Interpolate small gaps
         s = s.interpolate(method="time", limit=6)
