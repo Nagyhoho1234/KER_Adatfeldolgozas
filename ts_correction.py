@@ -113,6 +113,69 @@ def detect_spikes(series: pd.Series, sections, window: int = SPIKE_WINDOW,
     return s, n_removed
 
 
+def detect_calibration_jumps(series: pd.Series, sections,
+                             window: int = 24, k: float = 8.0) -> list:
+    """Pre-pass: detect large calibration jumps (instrument swaps).
+    These are sudden jumps where both sides are stable (low variance)
+    but at very different levels. Split cleanly at these points BEFORE
+    the finer changepoint detection, so the changepoint detector doesn't
+    create cascading micro-sections around them."""
+    all_sections = []
+    for (start, end) in sections:
+        sec = series.loc[start:end].dropna()
+        if len(sec) < window * 4:
+            all_sections.append((start, end))
+            continue
+
+        vals = sec.values
+        n = len(vals)
+        diffs = np.abs(np.diff(vals))
+        typical = np.nanmedian(diffs)
+        if typical == 0:
+            typical = np.nanmean(diffs)
+        if typical == 0:
+            all_sections.append((start, end))
+            continue
+
+        # Find jumps where the shift is huge AND both sides are stable
+        split_points = []
+        for i in range(window, n - window):
+            before = vals[i - window:i]
+            after = vals[i:i + window]
+            jump = abs(np.median(after) - np.median(before))
+            before_var = np.std(before)
+            after_var = np.std(after)
+            # Big jump with stable sides = calibration change
+            if jump > k * typical and before_var < jump * 0.3 and after_var < jump * 0.3:
+                split_points.append(i)
+
+        if not split_points:
+            all_sections.append((start, end))
+            continue
+
+        # Cluster nearby points and pick the sharpest
+        clustered = []
+        i = 0
+        while i < len(split_points):
+            cluster = [split_points[i]]
+            j = i + 1
+            while j < len(split_points) and split_points[j] - split_points[j-1] <= window:
+                cluster.append(split_points[j])
+                j += 1
+            # Pick middle of cluster
+            clustered.append(cluster[len(cluster) // 2])
+            i = j
+
+        # Split
+        boundaries = [0] + clustered + [n]
+        for s_idx in range(len(boundaries) - 1):
+            sub = sec.iloc[boundaries[s_idx]:boundaries[s_idx + 1]]
+            if len(sub) >= 6:
+                all_sections.append((sub.index[0], sub.index[-1]))
+
+    return all_sections
+
+
 def detect_changepoints(series: pd.Series, sections,
                         window: int = CHANGEPOINT_WINDOW,
                         k: float = CHANGEPOINT_K,
@@ -381,7 +444,11 @@ def process_channel(series: pd.Series, channel_name: str, station: str) -> tuple
     # Re-segment
     sections = segment(s)
 
-    # 4. Detect intra-section level shifts (change-point detection)
+    # 4a. Detect calibration jumps (instrument swaps) — clean breaks
+    sections = detect_calibration_jumps(s, sections)
+    stats["n_after_calib_jumps"] = len(sections)
+
+    # 4b. Detect finer intra-section level shifts (change-point detection)
     sections = detect_changepoints(s, sections)
     stats["n_sections_with_changepoints"] = len(sections)
 
