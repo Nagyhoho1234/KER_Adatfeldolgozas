@@ -24,6 +24,7 @@ CHANNELS = ["CH0", "CH1", "CH3"]
 GAP_H = 3
 HAMPEL_WINDOW = 25       # hours
 HAMPEL_N_SIGMA = 4       # MADs for spike detection
+MIN_SPIKE_SIZE = 0.1     # meters — ignore anything smaller (real GW variation)
 PELT_PEN = 200           # PELT penalty — higher = fewer changepoints (only big shifts)
 PELT_MIN_SIZE = 24       # minimum segment size (hours)
 ALIGN_DAYS = 7           # 7-day median for boundary level estimation
@@ -48,10 +49,16 @@ def hampel_clean(s, window=HAMPEL_WINDOW, n_sigma=HAMPEL_N_SIGMA):
     result = hampel(valid, window_size=window, n_sigma=float(n_sigma))
     cleaned = s.copy()
     outlier_idx = result.outlier_indices  # integer positions in valid
-    n_changed = len(outlier_idx)
+    # Only remove spikes that are large enough (>= MIN_SPIKE_SIZE)
+    # Small deviations are real groundwater variability, not sensor errors
+    real_spikes = []
+    for idx in outlier_idx:
+        deviation = abs(valid.iloc[idx] - result.medians[idx])
+        if deviation >= MIN_SPIKE_SIZE:
+            real_spikes.append(idx)
+    n_changed = len(real_spikes)
     if n_changed > 0:
-        # Convert integer positions to actual timestamps
-        outlier_timestamps = valid.index[outlier_idx]
+        outlier_timestamps = valid.index[real_spikes]
         cleaned.loc[outlier_timestamps] = np.nan
     return cleaned, n_changed
 
