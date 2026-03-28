@@ -305,6 +305,49 @@ def remove_jump_reversals(series: pd.Series, max_spike_width: int = 8,
     return s, n_removed
 
 
+def trim_anomalous_tail(series: pd.Series, ref_window: int = 168,
+                        check_window: int = 48, k: float = 5.0) -> tuple:
+    """Detect and remove anomalous endings: if the last check_window hours
+    deviate significantly from the preceding ref_window hours, trim them.
+    This catches sensor failures at the end that would otherwise be the
+    reference for level-shift correction."""
+    s = series.copy()
+    valid = s.dropna()
+    if len(valid) < ref_window + check_window:
+        return s, 0
+
+    # Compare tail to preceding stable period
+    ref = valid.iloc[-(ref_window + check_window):-check_window]
+    tail = valid.iloc[-check_window:]
+
+    ref_med = ref.median()
+    ref_mad = (ref - ref_med).abs().median()
+    if ref_mad == 0:
+        ref_mad = (ref - ref_med).abs().mean()
+    if ref_mad == 0:
+        return s, 0
+
+    # Check if the tail median deviates significantly
+    tail_med = tail.median()
+    deviation = abs(tail_med - ref_med)
+
+    if deviation > k * ref_mad:
+        # Find the exact point where the anomaly starts
+        # Walk backward from the end to find the first normal point
+        threshold = ref_med + k * ref_mad * np.sign(tail_med - ref_med)
+        n_trimmed = 0
+        for idx in reversed(tail.index):
+            val = s.loc[idx]
+            if pd.notna(val) and abs(val - ref_med) > k * ref_mad:
+                s.loc[idx] = np.nan
+                n_trimmed += 1
+            else:
+                break  # Stop at first normal value
+        return s, n_trimmed
+
+    return s, 0
+
+
 def interpolate_small_gaps(series: pd.Series,
                            max_gap_h: int = INTERP_MAX_GAP_H) -> tuple:
     """Linearly interpolate gaps of <= max_gap_h hours."""
@@ -359,7 +402,12 @@ def process_channel(series: pd.Series, channel_name: str, station: str) -> tuple
     stats["n_outliers_removed"] += n_spikes3
     stats["n_post_spikes"] = n_spikes3
 
-    # 8. Interpolate small gaps
+    # 8. Trim anomalous tail: if the last N points deviate significantly
+    #    from the preceding stable period, trim them (sensor failure at end)
+    s, n_tail = trim_anomalous_tail(s)
+    stats["n_tail_trimmed"] = n_tail
+
+    # 9. Interpolate small gaps
     s, n_filled = interpolate_small_gaps(s)
     stats["n_interpolated"] = n_filled
     stats["n_valid_final"] = int(s.notna().sum())
