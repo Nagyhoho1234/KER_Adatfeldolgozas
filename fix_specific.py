@@ -66,7 +66,8 @@ def fix_ker02(verbose=True):
         "CH0": [pd.Timestamp("2025-09-16"), pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-19")],
         "CH1": [pd.Timestamp("2025-09-15 14:00"), pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-19")],
         "CH3": [pd.Timestamp("2025-06-17"), pd.Timestamp("2025-08-08"),
-                pd.Timestamp("2025-09-16"), pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-19")],
+                pd.Timestamp("2025-09-08 12:00"), pd.Timestamp("2025-09-16"),
+                pd.Timestamp("2025-11-26"), pd.Timestamp("2026-02-19")],
     }
 
     for ch in channels:

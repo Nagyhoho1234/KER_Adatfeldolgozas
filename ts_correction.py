@@ -77,6 +77,73 @@ def segment(s, gap_h=GAP_H):
     return sections
 
 
+def split_at_shifts(s, sections, days=ALIGN_DAYS, k=3.0):
+    """Split segments at internal level shifts.
+    Compare 7-day median before vs after each point.
+    If the difference exceeds k * local_MAD → split there."""
+    hrs = days * 24
+    new_sections = []
+
+    for (start, end) in sections:
+        sec = s.loc[start:end].dropna()
+        if len(sec) < hrs * 3:
+            new_sections.append((start, end))
+            continue
+
+        vals = sec.values
+        n = len(vals)
+
+        # Compute local MAD of first differences (measure of normal variability)
+        diffs = np.abs(np.diff(vals))
+        local_mad = np.nanmedian(diffs)
+        if local_mad == 0:
+            local_mad = np.nanmean(diffs)
+        if local_mad == 0:
+            new_sections.append((start, end))
+            continue
+
+        # Threshold: a shift must exceed k * typical_step * sqrt(hrs)
+        # (the median over hrs points reduces noise by ~sqrt(hrs))
+        threshold = k * local_mad * np.sqrt(hrs)
+
+        # Scan for shifts: compare 7-day median before vs after
+        jumps = np.zeros(n)
+        for i in range(hrs, n - hrs):
+            before_med = np.nanmedian(vals[i - hrs:i])
+            after_med = np.nanmedian(vals[i:i + hrs])
+            jumps[i] = after_med - before_med
+
+        # Find significant shifts
+        abs_jumps = np.abs(jumps)
+        candidates = np.where(abs_jumps > threshold)[0]
+
+        if len(candidates) == 0:
+            new_sections.append((start, end))
+            continue
+
+        # Cluster and pick the strongest in each cluster
+        split_points = []
+        i = 0
+        while i < len(candidates):
+            cluster = [candidates[i]]
+            j = i + 1
+            while j < len(candidates) and candidates[j] - candidates[j-1] <= hrs:
+                cluster.append(candidates[j])
+                j += 1
+            best = cluster[np.argmax(abs_jumps[cluster])]
+            split_points.append(best)
+            i = j
+
+        # Split the section
+        bounds = [0] + split_points + [n]
+        for bi in range(len(bounds) - 1):
+            sub = sec.iloc[bounds[bi]:bounds[bi + 1]]
+            if len(sub) >= 12:
+                new_sections.append((sub.index[0], sub.index[-1]))
+
+    return new_sections
+
+
 def align(s, sections, days=ALIGN_DAYS):
     """Align segments using median of last/first N days as boundary level.
     Last segment = reference (offset 0). Walk backwards."""
@@ -130,10 +197,13 @@ def process(station_id, verbose=True):
         # 1. Remove spikes (3 passes)
         s, n_spikes = remove_spikes(s)
 
-        # 2. Segment
+        # 2. Segment by gaps
         secs = segment(s)
 
-        # 3. Align using 7-day median at boundaries
+        # 3. Split segments at internal level shifts
+        secs = split_at_shifts(s, secs)
+
+        # 4. Align using 7-day median at boundaries
         s, offsets = align(s, secs)
 
         # 4. One more spike pass after alignment (catches spikes revealed by shift)
