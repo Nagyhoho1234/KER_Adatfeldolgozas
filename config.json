@@ -91,7 +91,13 @@
           {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
           {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
         ]},
-        {"instid": "202404010", "channels": []}
+        {"instid": "202404010", "channels": [
+          {"id": "0", "channel_name": "CH0", "parameter": "vezetőképesség", "unit": "mS/cm"},
+          {"id": "1", "channel_name": "CH1", "parameter": "hőmérséklet", "unit": "°C"},
+          {"id": "3", "channel_name": "CH3", "parameter": "vízszint", "unit": "m"},
+          {"id": "GEPV", "channel_name": "GEPV", "parameter": "akku feszültség", "unit": "mV"},
+          {"id": "GMSQ", "channel_name": "GMSQ", "parameter": "térerősség", "unit": "%"}
+        ]}
       ]
     },
     "1360": {

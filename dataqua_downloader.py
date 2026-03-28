@@ -174,19 +174,29 @@ def save_station_data(station_code, results, output_dir, station_info):
     all_dfs = []
     channel_meta = {}
 
+    # Group DataFrames by column name — multiple instruments may share columns
+    col_dfs = {}  # column_name -> list of Series
     for instid, channels in results.items():
         for ch_id, ch_data in channels.items():
             df = ch_data["data"]
-            all_dfs.append(df)
+            for col in df.columns:
+                if col not in col_dfs:
+                    col_dfs[col] = []
+                col_dfs[col].append(df[col])
             channel_meta[f"CH{ch_id}"] = ch_data["meta"]
 
-    if not all_dfs:
+    if not col_dfs:
         return None
 
-    # Merge all channels on timestamp
-    merged = all_dfs[0]
-    for df in all_dfs[1:]:
-        merged = merged.join(df, how="outer")
+    # For each column, combine all series (older first, newer overwrites overlaps)
+    merged_cols = {}
+    for col, series_list in col_dfs.items():
+        combined = series_list[0]
+        for s in series_list[1:]:
+            combined = combined.combine_first(s)
+        merged_cols[col] = combined
+
+    merged = pd.DataFrame(merged_cols)
 
     # Sort by timestamp
     merged.sort_index(inplace=True)
@@ -234,18 +244,26 @@ def merge_update(station_code, new_results, output_dir, station_info):
     """Merge new data into existing CSV (for --update mode)."""
     csv_path = Path(output_dir) / station_code / f"{station_code}_raw.csv"
 
-    # Build new DataFrame
-    all_new = []
+    # Build new DataFrame — handle duplicate columns from multiple instruments
+    col_dfs = {}
     for instid, channels in new_results.items():
         for ch_id, ch_data in channels.items():
-            all_new.append(ch_data["data"])
+            df = ch_data["data"]
+            for col in df.columns:
+                if col not in col_dfs:
+                    col_dfs[col] = []
+                col_dfs[col].append(df[col])
 
-    if not all_new:
+    if not col_dfs:
         return None
 
-    new_merged = all_new[0]
-    for df in all_new[1:]:
-        new_merged = new_merged.join(df, how="outer")
+    merged_cols = {}
+    for col, series_list in col_dfs.items():
+        combined = series_list[0]
+        for s in series_list[1:]:
+            combined = combined.combine_first(s)
+        merged_cols[col] = combined
+    new_merged = pd.DataFrame(merged_cols)
     new_merged.sort_index(inplace=True)
 
     if csv_path.exists():
