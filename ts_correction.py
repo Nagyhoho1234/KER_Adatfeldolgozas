@@ -24,7 +24,7 @@ CHANNELS = ["CH0", "CH1", "CH3"]
 GAP_H = 3
 HAMPEL_WINDOW = 25       # hours
 HAMPEL_N_SIGMA = 4       # MADs for spike detection
-PELT_PEN = 20            # PELT penalty — higher = fewer changepoints
+PELT_PEN = 200           # PELT penalty — higher = fewer changepoints (only big shifts)
 PELT_MIN_SIZE = 24       # minimum segment size (hours)
 ALIGN_DAYS = 7           # 7-day median for boundary level estimation
 INTERP_LIMIT = 6         # max gap to interpolate (hours)
