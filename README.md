@@ -47,6 +47,18 @@ pip install pandas requests beautifulsoup4 lxml ruptures hampel fastapi uvicorn
 cd dashboard/frontend && npm install && npm run build
 ```
 
+### Configure credentials
+
+The downloader needs DataQua EtherSense login credentials. Create a `.env` file in the project root:
+
+```bash
+# .env
+DATAQUA_USER=your_username
+DATAQUA_PASS=your_password
+```
+
+Alternatively, set them as environment variables. The `.env` file is gitignored and never committed.
+
 ### Download data
 
 ```bash

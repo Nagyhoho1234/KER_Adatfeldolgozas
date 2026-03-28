@@ -32,4 +32,11 @@ python dashboard/api.py          # Serves on :8000
 
 ## Credentials
 
-DataQua login is in config.json. Do not commit to public repos without removing credentials.
+DataQua EtherSense credentials are loaded from a `.env` file in the project root (gitignored):
+
+```
+DATAQUA_USER=your_username
+DATAQUA_PASS=your_password
+```
+
+The downloader (`dataqua_downloader.py`) reads these via `os.environ`, falling back to `config.json` (which has empty placeholders). Never commit real credentials to the repo.
