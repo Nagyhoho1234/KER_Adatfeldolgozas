@@ -1,0 +1,242 @@
+import React, { useEffect, useRef, useState } from 'react';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import Plot from 'react-plotly.js';
+
+const API_BASE = '/api';
+
+export default function App() {
+  const mapContainer = useRef(null);
+  const mapRef = useRef(null);
+  const markersRef = useRef([]);
+  const [stations, setStations] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [tsData, setTsData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch stations on mount
+  useEffect(() => {
+    fetch(`${API_BASE}/stations`)
+      .then((r) => r.json())
+      .then(setStations)
+      .catch((e) => console.error('Failed to load stations:', e));
+  }, []);
+
+  // Init map
+  useEffect(() => {
+    if (mapRef.current || !mapContainer.current) return;
+    const map = new maplibregl.Map({
+      container: mapContainer.current,
+      style: {
+        version: 8,
+        sources: {
+          osm: {
+            type: 'raster',
+            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+            tileSize: 256,
+            attribution: '&copy; OpenStreetMap contributors',
+          },
+        },
+        layers: [
+          {
+            id: 'osm',
+            type: 'raster',
+            source: 'osm',
+          },
+        ],
+      },
+      center: [21.63, 47.53],
+      zoom: 11,
+    });
+    map.addControl(new maplibregl.NavigationControl(), 'top-right');
+    mapRef.current = map;
+
+    return () => map.remove();
+  }, []);
+
+  // Add markers when stations load
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || stations.length === 0) return;
+
+    // Clear old markers
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+
+    stations.forEach((s) => {
+      // Create custom marker element
+      const el = document.createElement('div');
+      el.className = 'well-marker';
+      el.dataset.code = s.code;
+      el.title = `${s.code} - ${s.name}`;
+
+      // Label
+      const label = document.createElement('div');
+      label.className = 'well-label';
+      label.textContent = s.code;
+      el.appendChild(label);
+
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setSelected(s);
+      });
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([s.lng, s.lat])
+        .addTo(map);
+      markersRef.current.push(marker);
+    });
+  }, [stations]);
+
+  // Highlight selected marker
+  useEffect(() => {
+    document.querySelectorAll('.well-marker').forEach((el) => {
+      el.classList.toggle('selected', el.dataset.code === selected?.code);
+    });
+  }, [selected]);
+
+  // Fetch time series when station selected
+  useEffect(() => {
+    if (!selected) {
+      setTsData(null);
+      return;
+    }
+    setLoading(true);
+    fetch(`${API_BASE}/timeseries/${selected.code}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((data) => {
+        setTsData(data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.error('Failed to load timeseries:', e);
+        setTsData(null);
+        setLoading(false);
+      });
+  }, [selected]);
+
+  const plotLayout = (title, yLabel, height) => ({
+    title: { text: title, font: { size: 14 } },
+    xaxis: { title: '', type: 'date' },
+    yaxis: { title: yLabel },
+    height,
+    margin: { l: 60, r: 20, t: 40, b: 40 },
+    hovermode: 'x unified',
+  });
+
+  const plotConfig = { responsive: true, displayModeBar: true, displaylogo: false };
+
+  return (
+    <div className="app">
+      {/* Left panel: map */}
+      <div className="map-panel">
+        <div className="map-header">
+          <h2>KER Talajvíz Monitoring</h2>
+          <p>Debrecen — 18 megfigyelő kút</p>
+        </div>
+        <div ref={mapContainer} className="map-container" />
+        {/* Station list */}
+        <div className="station-list">
+          {stations.map((s) => (
+            <div
+              key={s.id}
+              className={`station-item ${selected?.code === s.code ? 'active' : ''}`}
+              onClick={() => setSelected(s)}
+            >
+              <span className="station-code">{s.code}</span>
+              <span className="station-name">{s.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Right panel: charts */}
+      <div className="chart-panel">
+        {!selected && (
+          <div className="placeholder">
+            <h2>Select a station</h2>
+            <p>Click a marker on the map or choose from the list to view time series data.</p>
+          </div>
+        )}
+        {selected && loading && (
+          <div className="placeholder">
+            <h2>Loading data for {selected.code}...</h2>
+          </div>
+        )}
+        {selected && !loading && tsData && (
+          <>
+            <div className="chart-header">
+              <h2>{selected.code} &mdash; {selected.name}</h2>
+              <span className="source-badge">Source: {tsData.source_file}</span>
+            </div>
+            <div className="charts-scroll">
+              {/* Water level - largest */}
+              <Plot
+                data={[
+                  {
+                    x: tsData.timestamps,
+                    y: tsData.CH3,
+                    type: 'scattergl',
+                    mode: 'lines',
+                    name: 'Water level',
+                    line: { color: '#1f77b4', width: 1.5 },
+                  },
+                ]}
+                layout={plotLayout(
+                  'Vízszint (Water Level)',
+                  'm',
+                  320
+                )}
+                config={plotConfig}
+                useResizeHandler
+                style={{ width: '100%' }}
+              />
+              {/* Temperature */}
+              <Plot
+                data={[
+                  {
+                    x: tsData.timestamps,
+                    y: tsData.CH1,
+                    type: 'scattergl',
+                    mode: 'lines',
+                    name: 'Temperature',
+                    line: { color: '#d62728', width: 1.5 },
+                  },
+                ]}
+                layout={plotLayout('Hőmérséklet (Temperature)', '\u00B0C', 220)}
+                config={plotConfig}
+                useResizeHandler
+                style={{ width: '100%' }}
+              />
+              {/* Conductivity */}
+              <Plot
+                data={[
+                  {
+                    x: tsData.timestamps,
+                    y: tsData.CH0,
+                    type: 'scattergl',
+                    mode: 'lines',
+                    name: 'Conductivity',
+                    line: { color: '#2ca02c', width: 1.5 },
+                  },
+                ]}
+                layout={plotLayout('Vezetőképesség (Conductivity)', 'mS/cm', 220)}
+                config={plotConfig}
+                useResizeHandler
+                style={{ width: '100%' }}
+              />
+            </div>
+          </>
+        )}
+        {selected && !loading && !tsData && (
+          <div className="placeholder">
+            <h2>No data available for {selected.code}</h2>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
