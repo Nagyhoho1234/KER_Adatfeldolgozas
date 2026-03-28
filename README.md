@@ -1,5 +1,7 @@
 # KER Groundwater Monitoring Dashboard
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19291001.svg)](https://doi.org/10.5281/zenodo.19291001)
+
 Automated data acquisition, quality control, and visualization system for 18 groundwater monitoring wells in Debrecen, Hungary (KER network).
 
 ## Overview
@@ -119,4 +121,4 @@ Fehér Zsolt Zoltán
 
 If you use this software, please cite:
 
-> Fehér, Z. Z. (2026). KER Groundwater Monitoring Dashboard. https://github.com/your-username/KER_Adatfeldolgozas
+> Fehér, Z. Z. (2026). KER Groundwater Monitoring Dashboard. https://doi.org/10.5281/zenodo.19291001
