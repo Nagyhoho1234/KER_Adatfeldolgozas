@@ -186,3 +186,83 @@ html, body, #root {
   white-space: nowrap;
   pointer-events: none;
 }
+
+/* ---- Update toast (lower-right) ---- */
+.update-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid #888;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  font-size: 13px;
+  z-index: 9999;
+  min-width: 280px;
+  max-width: 400px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.update-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.update-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.update-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.update-bar {
+  margin-top: 6px;
+  height: 3px;
+  background: #313244;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.update-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: #89b4fa;
+}
+
+.update-bar-animate {
+  width: 40%;
+  animation: barSlide 1.5s ease-in-out infinite;
+}
+
+@keyframes barSlide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+.update-close {
+  background: none;
+  border: none;
+  color: #6c7086;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.update-close:hover {
+  color: #cdd6f4;
+}
