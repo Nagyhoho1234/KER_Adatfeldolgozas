@@ -113,13 +113,24 @@ def segment_by_gaps_and_changepoints(s, gap_h=GAP_H, pen=PELT_PEN):
 
 def align(s, sections, days=ALIGN_DAYS):
     """Align segments using 7-day median at boundaries.
-    Last segment = reference. Walk backwards."""
+    Last segment = reference. Walk backwards.
+    Only correct shifts that are larger than normal variability
+    (measured as MAD of the overall series)."""
     out = s.copy()
     n = len(sections)
     if n < 2:
         return out, []
 
     hrs = days * 24
+
+    # Compute minimum shift threshold from daily variability
+    # Only correct shifts that are clearly artificial (much larger than natural daily change)
+    daily = out.dropna().resample("1D").median().dropna()
+    daily_mad = daily.diff().abs().median()
+    if daily_mad == 0:
+        daily_mad = daily.diff().abs().mean()
+    min_shift = max(daily_mad * 5, 0.05)  # at least 5x daily change, minimum 0.05
+
     offsets = [0.0] * n
 
     for i in range(n - 2, -1, -1):
@@ -136,7 +147,12 @@ def align(s, sections, days=ALIGN_DAYS):
         this_end = this_data.iloc[-min(hrs, len(this_data)):].median()
         next_start = next_data.iloc[:min(hrs, len(next_data))].median()
 
-        offsets[i] = (next_start - this_end) + offsets[i + 1]
+        jump = next_start - this_end
+        if abs(jump) < min_shift:
+            # Natural change, not a sensor shift — don't correct
+            offsets[i] = offsets[i + 1]
+        else:
+            offsets[i] = jump + offsets[i + 1]
 
     for i, (start, end) in enumerate(sections):
         if offsets[i] != 0:
