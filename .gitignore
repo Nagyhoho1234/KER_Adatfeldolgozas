@@ -1,6 +1,7 @@
 node_modules/
 __pycache__/
 *.pyc
+.env
 dashboard/server.log
 dashboard/frontend/node_modules/
 data/.update_state.json

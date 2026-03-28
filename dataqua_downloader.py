@@ -35,16 +35,27 @@ def load_config(config_path="config.json"):
 
 
 def create_session(config):
-    """Login and return authenticated session."""
+    """Login and return authenticated session.
+    Credentials from env vars DATAQUA_USER / DATAQUA_PASS, or .env file, or config.json."""
     session = requests.Session()
     session.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
     })
     base = config["base_url"]
-    creds = config["credentials"]
+    # Load .env if exists
+    env_path = Path(__file__).resolve().parent / ".env"
+    if env_path.exists():
+        for line in env_path.read_text().splitlines():
+            if "=" in line and not line.startswith("#"):
+                k, _, v = line.partition("=")
+                os.environ.setdefault(k.strip(), v.strip())
+    user = os.environ.get("DATAQUA_USER") or config["credentials"].get("userlogin")
+    pw = os.environ.get("DATAQUA_PASS") or config["credentials"].get("password")
+    if not user or not pw:
+        raise RuntimeError("Set DATAQUA_USER and DATAQUA_PASS env vars or in .env file")
     session.post(f"{base}/login.php", data={
-        "userlogin": creds["userlogin"],
-        "password": creds["password"],
+        "userlogin": user,
+        "password": pw,
         "loginuser": "Belépés",
     }, verify=False)
     # Login redirects via JS; verify by checking index page

@@ -1,8 +1,8 @@
 {
   "base_url": "https://monitoring.dataqua.hu",
   "credentials": {
-    "userlogin": "DebVar",
-    "password": "D3br3c3n"
+    "userlogin": "",
+    "password": ""
   },
   "export_format": "txt",
   "output_dir": "data",
