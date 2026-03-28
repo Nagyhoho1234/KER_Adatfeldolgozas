@@ -254,6 +254,57 @@ def correct_level_shifts(series: pd.Series, sections,
     return s, offsets
 
 
+def remove_jump_reversals(series: pd.Series, max_spike_width: int = 8,
+                          k: float = 3.0) -> tuple:
+    """Third-pass spike detector: finds jump-and-reversal patterns.
+    A spike is where the value suddenly jumps away from the local trend
+    and returns within max_spike_width steps. Works on the corrected
+    (shift-aligned) series to catch spikes that were hidden before."""
+    s = series.copy()
+    vals = s.values.copy()
+    n = len(vals)
+    n_removed = 0
+
+    # Compute the typical step size (MAD of first differences)
+    diffs = np.abs(np.diff(vals[~np.isnan(vals)]))
+    if len(diffs) == 0:
+        return s, 0
+    typical_step = np.nanmedian(diffs)
+    if typical_step == 0:
+        typical_step = np.nanmean(diffs)
+    if typical_step == 0:
+        return s, 0
+
+    threshold = k * typical_step
+
+    # Scan for spike patterns: compare each point to the median of its
+    # neighbors (excluding itself)
+    for width in range(1, max_spike_width + 1):
+        mask = np.zeros(n, dtype=bool)
+        for i in range(width, n - width):
+            block = vals[i:i + width]
+            if np.any(np.isnan(block)):
+                continue
+            before = vals[max(0, i - width):i]
+            after = vals[i + width:i + 2 * width]
+            before = before[~np.isnan(before)]
+            after = after[~np.isnan(after)]
+            if len(before) < 1 or len(after) < 1:
+                continue
+            neighbor_level = (np.median(before) + np.median(after)) / 2
+            block_level = np.median(block)
+            deviation = abs(block_level - neighbor_level)
+            if deviation > threshold:
+                mask[i:i + width] = True
+
+        if mask.any():
+            vals[mask] = np.nan
+            n_removed += int(mask.sum())
+
+    s[:] = vals
+    return s, n_removed
+
+
 def interpolate_small_gaps(series: pd.Series,
                            max_gap_h: int = INTERP_MAX_GAP_H) -> tuple:
     """Linearly interpolate gaps of <= max_gap_h hours."""
@@ -303,7 +354,12 @@ def process_channel(series: pd.Series, channel_name: str, station: str) -> tuple
     s, offsets = correct_level_shifts(s, sections)
     stats["max_level_shift"] = round(max(abs(o) for o in offsets), 4) if offsets else 0
 
-    # 7. Interpolate small gaps
+    # 7. Post-correction spike removal (catches spikes only visible after alignment)
+    s, n_spikes3 = remove_jump_reversals(s, max_spike_width=8, k=3.0)
+    stats["n_outliers_removed"] += n_spikes3
+    stats["n_post_spikes"] = n_spikes3
+
+    # 8. Interpolate small gaps
     s, n_filled = interpolate_small_gaps(s)
     stats["n_interpolated"] = n_filled
     stats["n_valid_final"] = int(s.notna().sum())

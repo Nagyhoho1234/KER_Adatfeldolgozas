@@ -157,11 +157,18 @@ export default function App() {
     });
   }, [stations]);
 
-  // Highlight selected marker
+  // Highlight selected marker and zoom to it
   useEffect(() => {
     document.querySelectorAll('.well-marker').forEach((el) => {
       el.classList.toggle('selected', el.dataset.code === selected?.code);
     });
+    if (selected && mapRef.current) {
+      mapRef.current.flyTo({
+        center: [selected.lng, selected.lat],
+        zoom: 14,
+        duration: 800,
+      });
+    }
   }, [selected]);
 
   // Fetch time series when station selected
