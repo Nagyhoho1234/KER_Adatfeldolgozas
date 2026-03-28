@@ -1,6 +1,10 @@
 # KER Groundwater Monitoring Dashboard
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19291001.svg)](https://doi.org/10.5281/zenodo.19291001)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![GitHub release](https://img.shields.io/github/v/release/Nagyhoho1234/KER_Adatfeldolgozas)](https://github.com/Nagyhoho1234/KER_Adatfeldolgozas/releases)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Nagyhoho1234/KER_Adatfeldolgozas)](https://github.com/Nagyhoho1234/KER_Adatfeldolgozas/commits)
 
 Automated data acquisition, quality control, and visualization system for 18 groundwater monitoring wells in Debrecen, Hungary (KER network).
 
