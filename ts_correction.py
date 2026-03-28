@@ -125,33 +125,38 @@ def trim_edges(series: pd.Series, sections, n: int = EDGE_POINTS,
 
 def correct_level_shifts(series: pd.Series, sections,
                          ref_pts: int = LEVEL_REF_PTS) -> (pd.Series, list):
-    """Shift sections so they connect smoothly. First section = reference."""
+    """Shift sections so they connect smoothly.
+    LAST section = reference (offset 0). Earlier sections are shifted
+    backwards to align with it, because the most recent sensor reading
+    is considered the current truth."""
     s = series.copy()
     if len(sections) < 2:
-        return s, []
+        return s, [0.0] if sections else []
 
-    cumulative_offset = 0.0
-    offsets = [0.0]  # first section offset
+    n = len(sections)
+    offsets = [0.0] * n  # last section stays at 0
 
-    for i in range(1, len(sections)):
-        prev_start, prev_end = sections[i - 1]
-        curr_start, curr_end = sections[i]
+    # Walk backwards from the last section
+    for i in range(n - 2, -1, -1):
+        curr_start, curr_end = sections[i]      # the earlier section
+        next_start, next_end = sections[i + 1]   # the later section (already aligned)
 
-        prev_vals = s.loc[prev_start:prev_end].dropna()
         curr_vals = s.loc[curr_start:curr_end].dropna()
+        next_vals = s.loc[next_start:next_end].dropna()
 
-        if len(prev_vals) < 2 or len(curr_vals) < 2:
-            offsets.append(cumulative_offset)
+        if len(curr_vals) < 2 or len(next_vals) < 2:
+            offsets[i] = offsets[i + 1]
             continue
 
-        prev_level = prev_vals.iloc[-min(ref_pts, len(prev_vals)):].median()
-        curr_level = curr_vals.iloc[:min(ref_pts, len(curr_vals))].median()
+        # End of earlier section vs start of later section
+        curr_end_level = curr_vals.iloc[-min(ref_pts, len(curr_vals)):].median()
+        next_start_level = next_vals.iloc[:min(ref_pts, len(next_vals))].median()
 
-        shift = prev_level - curr_level
-        cumulative_offset += shift
-        offsets.append(cumulative_offset)
+        # Shift the earlier section so its end matches the next section's start
+        shift = next_start_level - curr_end_level
+        offsets[i] = shift + offsets[i + 1]
 
-    # Apply offsets
+    # Apply offsets (last section has offset=0, earlier sections get shifted)
     for i, (start, end) in enumerate(sections):
         if offsets[i] != 0:
             mask = (s.index >= start) & (s.index <= end) & s.notna()
